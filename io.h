@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "grid.h"
+#include "screen.h"
 #include "types.h"
 
 void copy_into_center(uint8_t** dest, coord_t dsize, uint8_t** src, coord_t ssize);

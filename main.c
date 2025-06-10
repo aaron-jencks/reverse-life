@@ -6,11 +6,12 @@
 #include "grid.h"
 #include "io.h"
 #include "screen.h"
+#include "types.h"
 
 
 int main(int argc, char** argv) {
-    if (argc != 2) {
-        fprintf(stderr, "Usage: %s inputfile\n", argv[0]);
+    if (argc != 3) {
+        fprintf(stderr, "Usage: %s inputfile frames\n", argv[0]);
         return 1;
     }
 
@@ -19,6 +20,8 @@ int main(int argc, char** argv) {
 
     // 2. Load initial input
     grid_t input = load_grid(argv[1]);
+    size_t frames;
+    sscanf(argv[2], "%zd", &frames);
 
     // 3. Allocate full-screen field
     grid_t current = create_grid(term);
