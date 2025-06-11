@@ -24,6 +24,9 @@ arraylist.o: arraylist.c arraylist.h error.o
 priority.o: priority.c priority.h arraylist.o
 	$(CC) $(CFLAGS) -o $@ -c $<
 
+priority_test: testing/priority.c $(COBJECTS)
+	$(CC) $(CFLAGS) -o $@ $< $(COBJECTS)
+
 error.o: error.c error.h
 	$(CC) $(CFLAGS) -o $@ -c $<
 
