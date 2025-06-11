@@ -31,7 +31,7 @@ grid_t load_grid(const char* filename) {
 
         field.grid[row_count] = calloc(len, sizeof(uint8_t));
         for (size_t i = 0; i < len; i++) {
-            field.grid[row_count][i] = buffer[i] == '*';
+            field.grid[row_count][i] = buffer[i] == '*' ? 1 : 0;
         }
         row_count++;
     }
@@ -78,14 +78,18 @@ grid_t step_grid(grid_t g) {
                     size_t ni = i + dx;
                     size_t nj = j + dy;
                     if (ni >= 0 && ni < g.size.y && nj >= 0 && nj < g.size.x)
-                        live_neighbors += g.grid[ni][nj] ? 1 : 0;
+                        live_neighbors += g.grid[ni][nj] > 0 ? 1 : 0;
                 }
             }
 
-            if (g.grid[i][j])
-                next.grid[i][j] = (live_neighbors < 4) && (live_neighbors >= 2);
+            if (g.grid[i][j] > 0)
+                next.grid[i][j] = ((live_neighbors < 4) && (live_neighbors >= 2)) ? 1 : 0;
             else
-                next.grid[i][j] = (live_neighbors == 3);
+                next.grid[i][j] = (live_neighbors == 3) ? 1 : 0;
         }
     }
+}
+
+grid_t prior_grid(grid_t g) {
+    
 }
