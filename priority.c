@@ -33,7 +33,7 @@ void heapsort(arraylist_t* heap) {
 
   size_t last_leaf = heap->count - 1;
   while(last_leaf) {
-    arraylist_swap(heap, 0, last_leaf--);
+    arraylist_swap(heap, 0, last_leaf);
     max_heapify(heap, 0, last_leaf);
   }
 }
