@@ -34,7 +34,7 @@ void heapsort(arraylist_t* heap) {
   size_t last_leaf = heap->count - 1;
   while(last_leaf) {
     arraylist_swap(heap, 0, last_leaf);
-    max_heapify(heap, 0, last_leaf);
+    max_heapify(heap, 0, last_leaf--);
   }
 }
 
@@ -42,7 +42,7 @@ void* heap_extract_max(arraylist_t* heap) {
   if(!heap->count) return 0;
   void* result = heap->arr[0];
   heap->arr[0] = heap->arr[--heap->count];
-  max_heapify(heap, 0, heap->count - 1);
+  max_heapify(heap, 0, heap->count);
   return result;
 }
 
