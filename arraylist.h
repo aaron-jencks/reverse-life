@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-typedef int (*comparator_t)(void*, void*);
+typedef int (*comparator_t)(const void*, const void*);
 
 typedef struct {
   void** arr;
