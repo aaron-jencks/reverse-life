@@ -2,9 +2,13 @@ CC=gcc
 CFLAGS=-g
 
 COBJECTS=screen.o grid.o io.o arraylist.o priority.o error.o
+TEST_OBJECTS=testing/priority.o testing/priority2.o
 
 main: main.c $(COBJECTS) types.h
 	$(CC) $(CFLAGS) -o $@ $< $(COBJECTS)
+
+test: testing/main.c $(TEST_OBJECTS) testing/testing.h $(COBJECTS) types.h
+	$(CC) $(CFLAGS) -o $@ $< $(COBJECTS) $(TEST_OBJECTS)
 
 simulator: simulator.c $(COBJECTS) types.h
 	$(CC) $(CFLAGS) -o $@ $< $(COBJECTS)
@@ -24,10 +28,13 @@ arraylist.o: arraylist.c arraylist.h error.o
 priority.o: priority.c priority.h arraylist.o
 	$(CC) $(CFLAGS) -o $@ -c $<
 
-priority_test: testing/priority.c $(COBJECTS)
-	$(CC) $(CFLAGS) -o $@ $< $(COBJECTS)
-
 error.o: error.c error.h
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+testing/priority.o: testing/priority.c arraylist.o priority.o
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+testing/priority2.o: testing/priority2.c arraylist.o priority.o
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 .PHONY: clean

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <stdbool.h>
 
 #include "../priority.h"
 #include "../arraylist.h"
@@ -11,7 +12,7 @@ int int_comparator(const void* a, const void* b) {
     return (ia > ib) - (ia < ib);
 }
 
-void test_insert_extract() {
+bool test_insert_extract() {
     arraylist_t heap = create_arraylist(10);
     heap.comparator = int_comparator;
 
@@ -27,14 +28,18 @@ void test_insert_extract() {
     while (heap.count > 0) {
         int* val = (int*)heap_extract_max(&heap);
         printf("Extracted: %d\n", *val);
-        assert(*val <= last_value); // Should be decreasing
+        if (*val > last_value) {
+            // Should be decreasing
+            return false;
+        }
         last_value = *val;
     }
 
     destroy_arraylist(heap);
+    return true;
 }
 
-void test_heapsort() {
+bool test_heapsort() {
     arraylist_t heap = create_arraylist(10);
     heap.comparator = int_comparator;
 
@@ -52,24 +57,25 @@ void test_heapsort() {
         int a = *(int*)heap.arr[i-1];
         int b = *(int*)heap.arr[i];
         printf("%d ", a);
-        assert(a <= b);
+        if (a > b) return false;
     }
     printf("\n");
 
     destroy_arraylist(heap);
+    return true;
 }
 
-int main() {
+bool test_priority_queue() {
     printf("Running test_insert_extract...\n");
-    test_insert_extract();
+    if(!test_insert_extract()) return false;
     printf("Passed test_insert_extract!\n\n");
 
     printf("Running test_heapsort...\n");
-    test_heapsort();
+    if(!test_heapsort()) return false;
     printf("Passed test_heapsort!\n\n");
 
     printf("All tests passed!\n");
-    return 0;
+    return true;
 }
 
 

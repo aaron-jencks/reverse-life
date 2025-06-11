@@ -9,6 +9,7 @@ arraylist_t create_arraylist(size_t capacity) {
   result.count = 0;
   result.capacity = capacity;
   result.comparator = NULL;
+  result.swap_updater = NULL;
   result.arr = (void**)malloc(sizeof(void*) * capacity);
   handle_memory_error(result.arr);
   return result;
@@ -71,5 +72,9 @@ void arraylist_swap(arraylist_t* arr, size_t a, size_t b) {
   void* temp = arr->arr[a];
   arr->arr[a] = arr->arr[b];
   arr->arr[b] = temp;
+  if (arr->swap_updater) {
+    arr->swap_updater(arr->arr[a], a);
+    arr->swap_updater(temp, b);
+  }
 }
 

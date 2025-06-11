@@ -10,4 +10,6 @@ void* heap_extract_max(arraylist_t* heap);
 
 void heap_insert(arraylist_t* heap, void* item);
 
+void heap_update_index(arraylist_t* heap, size_t index);
+
 #endif

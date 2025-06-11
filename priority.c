@@ -46,15 +46,29 @@ void* heap_extract_max(arraylist_t* heap) {
   return result;
 }
 
+void heap_percolate(arraylist_t* heap, size_t index) {
+    size_t p = parent(index);
+    while(index && heap->comparator(heap->arr[p], heap->arr[index]) < 0) {
+        p = parent(index);
+        arraylist_swap(heap, p, index);
+        index = p;
+    }
+}
+
 void heap_insert(arraylist_t* heap, void* item) {
-  size_t current = heap->count;
-  size_t p = parent(current);
-  arraylist_append(heap, item);
-  while(current && heap->comparator(heap->arr[p], heap->arr[current]) < 0) {
-    p = parent(current);
-    arraylist_swap(heap, p, current);
-    current = p;
-  }
+    arraylist_append(heap, item);
+    heap_percolate(heap, heap->count - 1);
+}
+
+void heap_update_index(arraylist_t* heap, size_t index) {
+    if(index > 0) {
+        if (heap->comparator(heap->arr[parent(index)], heap->arr[index]) < 0) {
+            // we need to percolate
+            heap_percolate(heap, index);
+            return;
+        }
+    }
+    max_heapify(heap, index, heap->count);
 }
 
 #undef parent
