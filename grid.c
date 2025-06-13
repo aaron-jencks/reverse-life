@@ -38,9 +38,9 @@ grid_t load_grid(const char* filename) {
             field.size.x = len;
         }
 
-        field.grid[row_count] = calloc(len, sizeof(uint8_t));
-        for (size_t i = 0; i < len; i++) {
-            field.grid[row_count][i] = buffer[i] == '*' ? 1 : 0;
+        field.grid[row_count] = calloc(field.size.x, sizeof(uint8_t));
+        for (size_t i = 0; i < field.size.x; i++) {
+            field.grid[row_count][i] = i < len ? (buffer[i] == '*' ? 1 : 0) : 0;
         }
         row_count++;
     }
