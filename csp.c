@@ -17,11 +17,11 @@ arraylist_t** COMBINATIONS = NULL;
 
 void generate_combinations() {
     // allocate memory
-    COMBINATIONS = malloc(sizeof(arraylist_t**) * 2);
+    COMBINATIONS = malloc(sizeof(arraylist_t*) * 2);
     handle_memory_error(COMBINATIONS);
-    COMBINATIONS[0] = malloc(sizeof(arraylist_t*) * 2);
+    COMBINATIONS[0] = malloc(sizeof(arraylist_t) * 2);
     handle_memory_error(COMBINATIONS[0]);
-    COMBINATIONS[1] = malloc(sizeof(arraylist_t*) * 2);
+    COMBINATIONS[1] = malloc(sizeof(arraylist_t) * 2);
     handle_memory_error(COMBINATIONS[1]);
     COMBINATIONS[0][0] = create_arraylist(256);
     COMBINATIONS[0][1] = create_arraylist(256);
