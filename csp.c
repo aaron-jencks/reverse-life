@@ -127,21 +127,21 @@ parent_result_t find_parent_grid(grid_t g) {
     // create constraint graph for g here
     // 1. create variables for each cell
     // Allocate symbol grid
-    Z3_ast **prev_alive_grid, **current_alive_grid;
+    Z3_ast **prev_alive_grid; //, **current_alive_grid;
     prev_alive_grid = malloc(sizeof(Z3_ast*) * g.size.y);
-    current_alive_grid = malloc(sizeof(Z3_ast*) * g.size.y); // TODO not needed, maybe
+    // current_alive_grid = malloc(sizeof(Z3_ast*) * g.size.y); // TODO not needed, maybe
     handle_memory_error(prev_alive_grid);
-    handle_memory_error(current_alive_grid);
+    // handle_memory_error(current_alive_grid);
     for(size_t i = 0; i < g.size.y; i++) {
         prev_alive_grid[i] = malloc(sizeof(Z3_ast) * g.size.x);
-        current_alive_grid = malloc(sizeof(Z3_ast) * g.size.x);
+        // current_alive_grid = malloc(sizeof(Z3_ast) * g.size.x);
         handle_memory_error(prev_alive_grid[i]);
-        handle_memory_error(current_alive_grid[i]);
+        // handle_memory_error(current_alive_grid[i]);
 
         for(size_t j = 0; j < g.size.x; j++) {
             // create Z3 variables
             prev_alive_grid[i][j] = make_bool_variable(ctx, "prev_alive", i, j);
-            current_alive_grid[i][j] = make_bool_variable(ctx, "current_alive", i, j);
+            // current_alive_grid[i][j] = make_bool_variable(ctx, "current_alive", i, j);
         }
     }
 
@@ -189,10 +189,10 @@ parent_result_t find_parent_grid(grid_t g) {
     // De-allocate symbol grids
     for(size_t i = 0; i < g.size.y; i++) {
         free(prev_alive_grid[i]);
-        free(current_alive_grid[i]);
+        // free(current_alive_grid[i]);
     }
     free(prev_alive_grid);
-    free(current_alive_grid);
+    // free(current_alive_grid);
 
     Z3_solver_dec_ref(ctx, solver);
     Z3_del_context(ctx);
