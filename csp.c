@@ -36,11 +36,13 @@ void generate_combinations() {
         bool dead_previous = get_state(*byte, false);
         arraylist_append(&COMBINATIONS[dead_previous][0], byte);
     }
+
+    COMBINATIONS_GENERATED = true;
 }
 
 char* make_cell_name(const char* prefix, size_t row, size_t column) {
     char* name = malloc(sizeof(char) * (strlen(prefix) + 23));
-    sprintf(name, "%s_%zd_%zd", row, column);
+    sprintf(name, "%s_%zd_%zd", prefix, row, column);
     return name;
 }
 
