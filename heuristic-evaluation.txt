@@ -1,0 +1,215 @@
+I don't think this is true, lets take that same example okay?
+
+C1 C2 C3
+C4 C5 C6
+C7 C8 C9
+
+. O .
+O . O
+. O .
+
+We know the final state, but as of current, in the previous state all of the cells are in a superposition, what can we infer about the cell constraints?
+
+We can look at the constraints in 2 ways. Do we look at the number of possible variations for each cell? Or do we strictly look at the neighbor counts?
+
+Variations:
+Interesting because we have to consider if the cell in question will be alive or dead:
+- C1: (needs to die) 3 possible neighbors
+	- Alive: (must starve) can have 1 neighbor
+	- Dead: (must stay dead) can have less than 3 neighbors (0, 1, or 2)
+	- Total variations: 1 (all dead) + 3 (1 neighbor) + 3 (2 neighbors) = 7 variations
+- C2: (needs to be alive) 5 possible neighbors
+	- Alive: (must survive) can have 2 or 3 neighbors
+	- Dead: (must be born) can have 3 neighbors
+	- Total: 10 (2 neighbors) + 10 (3 neighbors) = 20 variations
+- C3: C1
+- C4: C2
+- C5: (needs to be dead) 8 possible neighbors
+	- Alive: (must starve, or overpopulate) can have 1 neighbor or can have 4+ neighbors
+	- Dead: (must stay dead) can have not 3 neighbors (0, 1, or 2)
+	- Total variations: 1 (all dead) + 8 (1 neighbor) + 28 (7 + 6 + 5 + 4 + 3 + 2 + 1) (2 neighbors) + 70 (4 neighbors) + 56 (5 neighbors) + 28 (6 neighbors) + 8 (7 neighbors) + 1 (8 neighbors) = 200 variations
+- C6: C2
+- C7: C1
+- C8: C2
+- C9: C1
+
+This gives us the following constraint matrix:
+
+7	20	7
+20	200	20
+7	20	7
+
+We pick one of the corners, lets say C1, we set it to Alive
+
+- C2: (needs to be alive) 4 possible neighbors (1 already alive)
+	- Alive: (must survive) can have 1 or 2 neighbors
+	- Dead: (must be born) can have 3 neighbors
+	- Total: 1 (1 neighbor) + 4 (2 neighbors) + 6 (3 neighbors) = 11 variations
+- C3: 7 (previous result)
+- C4: C2
+- C5: (needs to be dead) 7 possible neighbors (1 already alive)
+	- Alive: (must starve, or overpopulate) can have 1 neighbor or can have 4+ neighbors
+	- Dead: (must stay dead) can have not 3 neighbors (1, or 2) (0 not possible anymore)
+	- Total: 1 (1 neighbor) + 7 (2 neighbors) + 35 (4 neighbors) + 35 (5 neighbors) + 21 (6 neighbors) + 7 (7 neighbors) + 1 (8 neighbors) = 107 variations
+- C6: 20 (previous result)
+- C7: 7
+- C8: 20
+- C9: 7
+
+This gives us the following constraint matrix:
+
+O	11	7
+11	107	20
+7	20	7
+
+Lets continue, we select C9 and mark it as Dead
+
+- C2: 11
+- C3: 7
+- C4: 11
+- C5: (needs to be dead) 6 possible neighbors (1 already alive)
+	- Alive: (must starve, or overpopulate) can have 1 neighbor or can have 4+ neighbors (8 not possible anymore)
+	- Dead: (must stay dead) can have not 3 neighbors (1, or 2) (0 not possible anymore)
+	- Total: 1 (1 neighbor) + 6 (2 neighbors) + 20 (4 neighbors) + 15 (5 neighbors) + 6 (6 neighbors) + 1 (7 neighbors) = 49 variations
+- C6: (needs to be alive) 4 possible neighbors
+	- Alive: (must survive) can have 2 or 3 neighbors
+	- Dead: (must be born) can have 3 neighbors
+	- Total: 6 (2 neighbors) + 4 (3 neighbors) = 10 variations
+- C7: 7
+- C8: C6
+
+This gives us the following constraint matrix:
+
+O	11	7
+11	49	10
+7	10	.
+
+We continue, selecting C4 and mark it as Alive
+
+- C2: (needs to be alive) 3 possible neighbors (2 already alive)
+	- Alive: (must survive) 2 or 3 neighbors
+	- Dead: (must be born) 3 neighbors
+	- Total: 1 (2 neighbors) + 3 (3 neighbors) = 4 variations
+- C4: 11
+- C5: (needs to be dead) 5 possible neighbors (2 already alive)
+	- Alive: (must starve, or overpopulate) can have 4+ neighbors (1 and 8 not possible anymore)
+	- Dead: (must stay dead) can have not 3 neighbors (2) (0 and 1 not possible anymore)
+	- Total: 1 (2 neighbors) + 10 (4 neighbors) + 10 (5 neighbors) + 5 (6 neighbors) + 1 (7 neighbors) = 27 variations
+- C6: (needs to be alive) 3 possible neighbors (1 already alive)
+	- Alive: (must survive) 2 or 3 neighbors
+	- Dead: (must be born) 3 neighbors
+	- Total: 3 (2 neighbors) + 3 (3 neighbors) = 6 variations
+- c7: 7
+- c8: 10
+
+This gives us the following constraint matrix:
+
+O	4	O
+11	27	6
+7	10	.
+
+We only have one choice for this one, C2, we set it to Alive
+
+- C4: (needs to be alive) 3 possible neighbors (2 already alive)
+	- Alive: (must survive) 2 or 3 neighbors
+	- Dead: (must be born) 3 neighbors
+	- Total: 1 (2 neighbors) + 3 (3 neighbors) = 4 variations
+- C5: (needs to be dead) 4 possible neighbors (3 already alive)
+	- Alive: (must starve, or overpopulate) can have 4+ neighbors (1, 2 and 8 not possible anymore)
+	- Dead: (must stay dead) can have not 3 neighbors (0, 1, and 2 not possible anymore)
+	- Total: 4 (4 neighbors) + 6 (5 neighbors) + 4 (6 neighbors) + 1 (7 neighbors) = 15 variations
+- C6: (needs to be alive) 2 possible neighbors (2 already alive)
+	- Alive: (must survive) 2 or 3 neighbors
+	- Dead: (must be born) 3 neighbors
+	- Total: 1 (2 neighbors) + 2 (3 neighbors) = 3 variations
+- C7: 7
+- C8: 10
+
+This gives us the following constraint matrix:
+
+O	O	O
+4	15	3
+7	10	.
+
+C6 is next, lets do Alive
+
+- C4: 4
+- C5: (needs to be dead) 3 possible neighbors (4 already alive)
+	- Alive: (must starve, or overpopulate) can have 4+ neighbors (1, 2, 3, and 8 not possible anymore)
+	- Dead: (must stay dead) can have not 3 neighbors (0, 1, and 2 not possible anymore)
+	- Total: 1 (4 neighbors) + 3 (5 neighbors) + 3 (6 neighbors) + 1 (7 neighbors) = 8 variations
+- C7: 7
+- C8: (needs to be alive) 3 possible neighbors (1 already alive)
+	- Alive: (must survive) 2 or 3 neighbors
+	- Dead: (must be born) 3 neighbors
+	- Total: 3 (2 neighbors) + 3 (3 neighbors) = 6 variations
+	
+This gives us the following constraint matrix:
+
+O	O	O
+4	8	O
+7	6	.
+
+C4 is next, we'll do Alive
+
+- C5: (needs to be dead) 2 possible neighbors (5 already alive)
+	- Alive: (must starve, or overpopulate) can have 5+ neighbors (<5, and 8 not possible anymore)
+	- Dead: (must stay dead) can have not 3 neighbors (0, 1, and 2 not possible anymore)
+	- Total: 1 (5 neighbors) + 2 (6 neighbors) + 1 (7 neighbors) = 4 variations
+- C7: (needs to be dead) 2 possible neighbors (1 already alive)
+	- Alive: (needs to starve) can have 1 neighbor
+	- Dead: (needs to stay dead) can have 1 or 2 neighbors
+	- Total: 1 (1 neighbor) + 2 (2 neighbors) = 3 variations
+- C8: (needs to be alive) 2 possible neighbors (2 already alive)
+	- Alive: (must survive) 2 or 3 neighbors
+	- Dead: (must be born) 3 neighbors
+	- Total: 1 (2 neighbors) + 2 (3 neighbors) = 3 variations
+	
+This gives us the following constraint matrix:
+
+O	O	O
+O	4	O
+3	3	.
+
+Lets pick C8 and do Alive
+
+- C5: (needs to be dead) 1 possible neighbors (6 already alive)
+	- Alive: (must starve, or overpopulate) can have 6+ neighbors (<6, and 8 not possible anymore)
+	- Dead: (must stay dead) can have not 3 neighbors (0, 1, and 2 not possible anymore)
+	- Total: 1 (6 neighbors) + 1 (7 neighbors) = 2 variations
+- C7: (needs to be dead) 2 possible neighbors (2 already alive)
+	- Alive: (needs to starve) not possible
+	- Dead: (needs to stay dead) can have 1 or 2 neighbors
+	- Total: 1 (2 neighbors) = 1 variation
+	
+This gives us the following constraint matrix:
+
+O	O	O
+O	2	O
+1	O	.
+
+The solution is trivial, we pick C7, it must be dead and C5 doesn't matter, lets say Alive, we end up with:
+
+O	O	O
+O	O	O <- constraint got violated because we ignored it as we kept going...
+.	O	.
+
+Neighbor Counts:
+In this case we also have to consider if the cell in question will be alive or dead:
+- C1: (needs to be dead) 3 possible neighbor counts (0, 1, or 2)
+- C2: (needs to be alive) 2 possible neighbor counts (2, or 3)
+- C3: C1
+- C4: C2
+- C5: (needs to be dead) 8 possible neighbor counts (0, 1, 2, 4, 5, 6, 7, 8)
+- C6: C2
+- C7: C1
+- C8: C2
+- C9: C1
+
+This gives us the following constraint matrix:
+
+3	2	3
+2	8	2
+3	2	3
+
+

@@ -90,6 +90,75 @@ grid_t step_grid(grid_t g) {
     }
 }
 
-grid_t prior_grid(grid_t g) {
-    
+/**
+ * Compresses the neighbors around a coordinate into a 8 bit integer
+ * 
+ * The integer has the following layout:
+ * 0000 0000
+ * ABCD EFGH
+ * Where:
+ * A B C
+ * D . E
+ * F G H
+ */
+uint8_t compress_neighbors(grid_t g, coord_t coordinate) {
+    uint8_t result = 0;
+    size_t bit = 7;
+    for(int i = -1; i <= 1; i++) {
+        for(int j = -1; j <= 1; j++) {
+            if(!(i || j)) continue;
+            if(i < 0 || i >= g.size.y || j < 0 || j >= g.size.x || !g.grid[i][j]) {
+                bit--;
+            } else {
+                result += (1 << bit--);
+            }
+        }
+    }
+    return result;
+}
+
+icoord_t decode_neighbor_bit(uint8_t state, size_t bit, coord_t origin) {
+    icoord_t result = {origin.x, origin.y};
+    switch(bit) {
+        case 7:
+        result.y--;
+        result.x--;
+        return result;
+        case 6:
+        result.x--;
+        return result;
+        case 5:
+        result.y++;
+        result.x--;
+        return result;
+        case 4:
+        result.y--;
+        return result;
+        case 3:
+        result.y++;
+        return result;
+        case 2:
+        result.y--;
+        result.x++;
+        return result;
+        case 1:
+        result.x++;
+        return result;
+        case 0:
+        result.y++;
+        result.x++;
+        return result;
+    }
+}
+
+/**
+ * Determines the next state of a cell given the neighbors and it's current state
+ */
+bool get_state(uint8_t neighbors, bool state) {
+    size_t neighbor_count = 0;
+    for(size_t i = 0; i++ < 8;) {
+        if(neighbors & 0x01) neighbor_count++;
+        neighbors >>= 1;
+    }
+    return (state && (neighbor_count == 2 || neighbor_count == 3)) || (!state && neighbor_count == 3);
 }

@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-g
 
-COBJECTS=screen.o grid.o io.o arraylist.o priority.o error.o
+COBJECTS=screen.o grid.o io.o arraylist.o priority.o error.o csp.o
 TEST_OBJECTS=testing/priority.o testing/priority2.o
 
 main: main.c $(COBJECTS) types.h
@@ -39,4 +39,4 @@ testing/priority2.o: testing/priority2.c arraylist.o priority.o
 
 .PHONY: clean
 clean:
-	rm -rf main simulator $(COBJECTS)
+	rm -rf main simulator test $(COBJECTS) $(TEST_OBJECTS)
