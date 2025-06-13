@@ -1,17 +1,18 @@
 CC=gcc
 CFLAGS=-g
+LD=-lz3
 
 COBJECTS=screen.o grid.o io.o arraylist.o priority.o error.o csp.o
 TEST_OBJECTS=testing/priority.o testing/priority2.o
 
 main: main.c $(COBJECTS) types.h
-	$(CC) $(CFLAGS) -o $@ $< $(COBJECTS)
+	$(CC) $(CFLAGS) -o $@ $< $(COBJECTS) $(LD)
 
 test: testing/main.c $(TEST_OBJECTS) testing/testing.h $(COBJECTS) types.h
-	$(CC) $(CFLAGS) -o $@ $< $(COBJECTS) $(TEST_OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $< $(COBJECTS) $(TEST_OBJECTS) $(LD)
 
 simulator: simulator.c $(COBJECTS) types.h
-	$(CC) $(CFLAGS) -o $@ $< $(COBJECTS)
+	$(CC) $(CFLAGS) -o $@ $< $(COBJECTS) $(LD)
 
 screen.o: screen.c screen.h types.h
 	$(CC) $(CFLAGS) -o $@ -c $<

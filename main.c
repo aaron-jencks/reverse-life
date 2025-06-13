@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include "csp.h"
+#include "error.h"
 #include "grid.h"
 #include "io.h"
 #include "screen.h"
@@ -36,11 +38,18 @@ int main(int argc, char** argv) {
     clear_screen();
 
     // 5. Simulation loop
-    while (true) {
-        draw_grid(current, previous, term);
-        usleep(100000);
-        step_grid(current);
+    parent_result_t step_result;
+    draw_grid(current, previous, term, true);
+    for(size_t i = 0; i++ < frames;) {
+        previous = copy_grid(current);
+        step_result = find_parent_grid(current);
+        if(!step_result.found) handle_error(1, "could not find parent grid, simulation failed...");
+        current = copy_grid(step_result.result);
+        destroy_grid(step_result.result);
+        draw_grid(current, previous, term, false);
     }
+
+    printf("finished simulation!\n");
 
     return 0;
 }

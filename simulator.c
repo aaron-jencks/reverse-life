@@ -33,10 +33,11 @@ int main(int argc, char** argv) {
     clear_screen();
 
     // 5. Simulation loop
+    draw_grid(current, previous, term, true);
     while (true) {
-        draw_grid(current, previous, term);
         usleep(100000);
         step_grid(current);
+        draw_grid(current, previous, term, false);
     }
 
     return 0;

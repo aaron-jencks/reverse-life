@@ -26,8 +26,17 @@ grid_t load_grid(const char* filename) {
             capacity *= 2;
             field.grid = realloc(field.grid, capacity * sizeof(uint8_t*));
         }
-        if (field.size.x < len)
+        if (field.size.x < len) {
+            // New max row length → must resize previous rows
+            for (size_t i = 0; i < row_count; i++) {
+                field.grid[i] = realloc(field.grid[i], len * sizeof(uint8_t));
+                // Initialize new cells to 0
+                for (size_t j = field.size.x; j < len; j++) {
+                    field.grid[i][j] = 0;
+                }
+            }
             field.size.x = len;
+        }
 
         field.grid[row_count] = calloc(len, sizeof(uint8_t));
         for (size_t i = 0; i < len; i++) {

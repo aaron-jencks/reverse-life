@@ -122,7 +122,7 @@ parent_result_t find_parent_grid(grid_t g) {
     Z3_solver solver = Z3_mk_solver(ctx);
     Z3_solver_inc_ref(ctx, solver);
 
-    //TODO create constraint graph for g here
+    // create constraint graph for g here
     // 1. create variables for each cell
     // Allocate symbol grid
     Z3_ast **prev_alive_grid, **current_alive_grid;

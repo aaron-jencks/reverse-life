@@ -1,6 +1,7 @@
 #ifndef IO_H
 #define IO_H
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #include "grid.h"
@@ -8,6 +9,6 @@
 #include "types.h"
 
 void copy_into_center(uint8_t** dest, coord_t dsize, uint8_t** src, coord_t ssize);
-void draw_grid(grid_t current, grid_t previous, coord_t term);
+void draw_grid(grid_t current, grid_t previous, coord_t term, bool force_alive);
 
 #endif
