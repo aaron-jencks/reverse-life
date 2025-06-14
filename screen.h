@@ -9,7 +9,7 @@
 
 #define clear_screen() printf("\033[2J")
 
-#define cursor_move(c) printf("\033[%zd;%zdH", (c.x+1), (c.y+1))
+#define cursor_move(c) printf("\033[%zd;%zdH", (c.y+1), (c.x+1))
 
 coord_t get_terminal_size();
 

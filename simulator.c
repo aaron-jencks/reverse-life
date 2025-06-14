@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "grid.h"
 #include "io.h"
@@ -22,6 +23,7 @@ int main(int argc, char** argv) {
 
     // 3. Allocate full-screen field
     grid_t current = create_grid(term);
+    grid_t temp;
 
     copy_into_center(current.grid, current.size,
                      input.grid, input.size);
@@ -33,10 +35,12 @@ int main(int argc, char** argv) {
     clear_screen();
 
     // 5. Simulation loop
-    draw_grid(current, previous, term, true);
+    draw_grid(current, current, term, true);
     while (true) {
         usleep(100000);
-        step_grid(current);
+        temp = current;
+        current = step_grid(current);
+        destroy_grid(temp);
         draw_grid(current, previous, term, false);
     }
 

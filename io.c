@@ -20,7 +20,7 @@ void draw_grid(grid_t current, grid_t previous, coord_t term, bool force_alive) 
     coord_t cc;
     for (size_t i = 0; i < current.size.y && i < term.y; i++) {
         for (size_t j = 0; j < current.size.x && j < term.x; j++) {
-            if (current.grid[i][j] != previous.grid[i][j] || (force_alive && current.grid[i][j])) {
+            if (current.grid[i][j] != previous.grid[i][j] || (force_alive && current.grid[i][j] > 0)) {
                 cc.x = j;
                 cc.y = i;
                 cursor_move(cc);

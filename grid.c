@@ -97,6 +97,7 @@ grid_t step_grid(grid_t g) {
                 next.grid[i][j] = (live_neighbors == 3) ? 1 : 0;
         }
     }
+    return next;
 }
 
 /**
