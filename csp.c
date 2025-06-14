@@ -56,23 +56,26 @@ Z3_ast make_bool_variable(Z3_context ctx, const char* prefix, size_t row, size_t
 
 Z3_ast get_neighbors_products(Z3_context ctx, coord_t size, coord_t position, uint8_t state, Z3_ast** ast_grid) {
     Z3_ast args[8];
+    size_t args_index = 0;
     icoord_t current_position;
     bool bit_value;
-    for(int bit = 7; bit >= 0; bit--) {
+    for(size_t bit = 0; bit < 8; bit++) {
         current_position = decode_neighbor_bit(state, bit, position);
+        if(current_position.x < 0 || current_position.x >= size.x || current_position.y < 0 || current_position.y >= size.y) continue;
         bit_value = (state & (0x01 << bit)) > 0;
-        // makes assumption that neighbor_state_on_board was called before this
-        // so no need to check if the decoded bit is on the grid
-        args[bit] = ast_grid[current_position.y][current_position.x];
-        if(!bit_value) args[bit] = Z3_mk_not(ctx, args[bit]);
+        args[args_index] = ast_grid[current_position.y][current_position.x];
+        if(!bit_value) args[args_index] = Z3_mk_not(ctx, args[args_index]);
+        args_index++;
     }
-    return Z3_mk_and(ctx, 8, args);
+    return Z3_mk_and(ctx, args_index, args);
 }
 
 bool neighbor_state_on_board(coord_t size, coord_t position, uint8_t state) {
+    bool bit_value;
     for(size_t bit = 0; bit < 8; bit++) {
         icoord_t current_position = decode_neighbor_bit(state, bit, position);
-        if(current_position.y < 0 || current_position.y >= size.y || current_position.x < 0 || current_position.x >= size.x) return false;
+        bit_value = (state & (0x01 << bit)) > 0;
+        if(bit_value && (current_position.y < 0 || current_position.y >= size.y || current_position.x < 0 || current_position.x >= size.x)) return false;
     }
     return true;
 }
@@ -128,7 +131,7 @@ parent_result_t find_parent_grid(grid_t g) {
     // 1. create variables for each cell
     // Allocate symbol grid
     printf("allocating variable grid...");
-    Z3_ast **prev_alive_grid; //, **current_alive_grid;
+    Z3_ast** prev_alive_grid; //, **current_alive_grid;
     prev_alive_grid = malloc(sizeof(Z3_ast*) * g.size.y);
     // current_alive_grid = malloc(sizeof(Z3_ast*) * g.size.y); // TODO not needed, maybe
     handle_memory_error(prev_alive_grid);
@@ -159,9 +162,14 @@ parent_result_t find_parent_grid(grid_t g) {
             current = make_previous_constraints(ctx, g.size, position, g.grid[i][j], prev_alive_grid);
             Z3_solver_assert(ctx, solver, current);
             printf("\rbuilding constraints...%zd/%zd", i * g.size.x + j, total_constraint_counts);
+            // printf("%s\n", Z3_ast_to_string(ctx, current));
+            // exit(0);
         }
     }
-    printf("\rbuilding constraings...done\nsolving...");
+    printf("\rbuilding constraints...done\nsolving...");
+
+    // printf("%s\n", Z3_solver_to_string(ctx, solver));
+    // exit(0);
 
     // 3. Solve the grid
     Z3_lbool result = Z3_solver_check(ctx, solver);
