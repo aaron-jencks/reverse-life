@@ -127,6 +127,7 @@ parent_result_t find_parent_grid(grid_t g) {
     // create constraint graph for g here
     // 1. create variables for each cell
     // Allocate symbol grid
+    printf("allocating variable grid...");
     Z3_ast **prev_alive_grid; //, **current_alive_grid;
     prev_alive_grid = malloc(sizeof(Z3_ast*) * g.size.y);
     // current_alive_grid = malloc(sizeof(Z3_ast*) * g.size.y); // TODO not needed, maybe
@@ -144,21 +145,28 @@ parent_result_t find_parent_grid(grid_t g) {
             // current_alive_grid[i][j] = make_bool_variable(ctx, "current_alive", i, j);
         }
     }
+    printf("done\n");
 
     // 2. Create constraints for previous grid
     Z3_ast current;
     coord_t position;
+    size_t total_constraint_counts = g.size.y * g.size.x;
+    printf("building constraints...0/%zd", total_constraint_counts);
     for(size_t i = 0; i < g.size.y; i++) {
         position.y = i;
         for(size_t j = 0; j < g.size.x; j++) {
             position.x = j;
             current = make_previous_constraints(ctx, g.size, position, g.grid[i][j], prev_alive_grid);
             Z3_solver_assert(ctx, solver, current);
+            printf("\rbuilding constraints...%zd/%zd", i * g.size.x + j, total_constraint_counts);
         }
     }
+    printf("\rbuilding constraings...done\nsolving...");
 
     // 3. Solve the grid
     Z3_lbool result = Z3_solver_check(ctx, solver);
+
+    printf("done\nbuilding parent grid...");
 
     parent_result_t total_result;
     total_result.found = false;
@@ -196,6 +204,8 @@ parent_result_t find_parent_grid(grid_t g) {
 
     Z3_solver_dec_ref(ctx, solver);
     Z3_del_context(ctx);
+
+    printf("done\nparent grid created!\n");
 
     return total_result;
 }
