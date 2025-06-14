@@ -66,7 +66,7 @@ Z3_ast get_neighbors_products(Z3_context ctx, coord_t size, coord_t position, ui
         args[bit] = ast_grid[current_position.y][current_position.x];
         if(!bit_value) args[bit] = Z3_mk_not(ctx, args[bit]);
     }
-    return Z3_mk_and(ctx, 9, args);
+    return Z3_mk_and(ctx, 8, args);
 }
 
 bool neighbor_state_on_board(coord_t size, coord_t position, uint8_t state) {
