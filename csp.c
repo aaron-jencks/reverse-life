@@ -171,7 +171,7 @@ parent_result_t find_parent_grid(grid_t g) {
     parent_result_t total_result;
     total_result.found = false;
 
-    if(result == Z3_L_TRUE) {
+    if(result == Z3_L_TRUE || result == Z3_L_UNDEF) {
         // Model found
         Z3_model model = Z3_solver_get_model(ctx, solver);
         Z3_model_inc_ref(ctx, model);
